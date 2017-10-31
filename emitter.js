@@ -24,6 +24,7 @@ function getEmitter() {
         on: function (event, context, handler) {
             // Для студента событие представляет из себя объект, содержащий список обработчиков,
             // частоту события и количество повторений(Изначально не ограничено).
+            // Если на событие уже есть подписка, то добавляем обработчик, иначе подписываем
             if (context[event]) {
                 context[event].events.push(handler);
             } else {
@@ -35,6 +36,8 @@ function getEmitter() {
             }
             // Для преподавателя событие - объект содержащий список записавшихся студентов и
             // количество прошедших раз.
+            // Если на событие уже записывались, то записываем в него, если нет, создаем запись
+            // Студенты расположены по порядку записи. Могут повторяться.
             if (this[event]) {
                 this[event].students.push(context);
             } else {
@@ -54,6 +57,7 @@ function getEmitter() {
          * @returns {Object}
          */
         off: function (event, context) {
+            // Удаляем событие и все, что входит в его пространство имен
             for (let occasion of Object.keys(context)) {
                 if (occasion !== 'focus' && occasion !== 'wisdom' &&
                     occasion.indexOf(event) === 0) {
@@ -73,6 +77,8 @@ function getEmitter() {
             let namespaces = event.split('.');
             let that = this;
             let callEvent = function (student) {
+                // Если студент записан, не исчерпал лимит и наступило подходящее время,
+                // то выполняем первое событие из цепочки.
                 if (student[event] && student[event].times !== 0 &&
                 that[event].count % student[event].frequency === 0) {
                     student[event].events[0].call(student);
@@ -80,13 +86,15 @@ function getEmitter() {
                     student[event].times--;
                 }
             };
+            // Последовательно выполняем события до вершины пространства имен
             while (namespaces.length !== 0) {
                 event = namespaces.join('.');
                 if (this[event]) {
+                    // Для всех записанных студентов в порядке очереди пытаемся выполнить событие
                     this[event].students.forEach(callEvent);
                     this[event].count++;
                 }
-                namespaces.splice(-1, 1);
+                namespaces.pop();
             }
 
             return this;
