@@ -4,7 +4,7 @@
  * Сделано задание на звездочку
  * Реализованы методы several и through
  */
-getEmitter.isStar = false;
+getEmitter.isStar = true;
 module.exports = getEmitter;
 
 /**
@@ -36,10 +36,10 @@ function getEmitter() {
             // Для преподавателя событие - объект содержащий список записавшихся студентов и
             // количество прошедших раз.
             if (this[event]) {
-                this[event].students.push(context);
+                this[event].students.add(context);
             } else {
                 this[event] = {
-                    students: [context],
+                    students: new Set([context]),
                     count: 0
                 };
             }
@@ -54,8 +54,6 @@ function getEmitter() {
          * @returns {Object}
          */
         off: function (event, context) {
-            delete context[event]; // Отписываемся от события
-            // И от всех событий, входящих в его пространство имен
             for (let occasion of Object.keys(context)) {
                 if (occasion !== 'focus' && occasion !== 'wisdom' &&
                     occasion.indexOf(event) === 0) {
@@ -83,7 +81,7 @@ function getEmitter() {
             while (namespaces.length !== 0) {
                 event = namespaces.join('.');
                 if (this[event]) {
-                    this[event].students.forEach(callEvent);
+                    [...this[event].students].forEach(callEvent);
                     this[event].count++;
                 }
                 namespaces.splice(-1, 1);
