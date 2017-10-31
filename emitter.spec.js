@@ -2,10 +2,10 @@
 /* eslint-disable no-invalid-this, no-shadow */
 'use strict';
 
-var assert = require('assert');
-var getEmitter = require('./emitter');
+let assert = require('assert');
+let getEmitter = require('./emitter');
 
-var students = {
+let students = {
     Sam: {
         focus: 100,
         wisdom: 50
@@ -24,7 +24,7 @@ var students = {
     }
 };
 
-var lecturer = getEmitter()
+let lecturer = getEmitter()
     .on('begin', students.Sam, function () {
         this.focus += 10;
     })
@@ -130,7 +130,7 @@ describe('lecturer-emitter', function () {
 
     if (getEmitter.isStar) {
         describe('Особая лекция для Билла и Сэма', function () {
-            var students = {
+            let students = {
                 Sam: {
                     focus: 100,
                     wisdom: 50
@@ -141,7 +141,7 @@ describe('lecturer-emitter', function () {
                 }
             };
 
-            var lecturer = getEmitter()
+            let lecturer = getEmitter()
                 .several('begin', students.Sam, function () {
                     this.focus += 10;
                 }, 1)

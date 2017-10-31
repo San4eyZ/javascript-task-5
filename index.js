@@ -1,9 +1,9 @@
 /* eslint-disable no-invalid-this */
 'use strict';
 
-var getEmitter = require('./emitter');
+let getEmitter = require('./emitter');
 
-var students = {
+let students = {
     Sam: {
         focus: 100,
         wisdom: 50
@@ -22,9 +22,10 @@ var students = {
     }
 };
 
-var lecturer = getEmitter();
+let lecturer = getEmitter();
 
 // С началом лекции у всех резко повышаются показатели
+
 lecturer
     .on('begin', students.Sam, function () {
         this.focus += 10;
