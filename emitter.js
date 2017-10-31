@@ -73,10 +73,11 @@ function getEmitter() {
             let namespaces = event.split('.');
             let that = this;
             let callEvent = function (student) {
-                if (student[event] && that[event].count < student[event].times &&
+                if (student[event] && student[event].times !== 0 &&
                 that[event].count % student[event].frequency === 0) {
                     student[event].events[0].call(student);
                     student[event].events.unshift();
+                    student[event].times--;
                 }
             };
             while (namespaces.length !== 0) {
