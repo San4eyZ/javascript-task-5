@@ -4,7 +4,7 @@
  * Сделано задание на звездочку
  * Реализованы методы several и through
  */
-getEmitter.isStar = true;
+getEmitter.isStar = false;
 module.exports = getEmitter;
 
 /**
@@ -86,7 +86,7 @@ function getEmitter() {
                     this[event].students.forEach(callEvent);
                     this[event].count++;
                 }
-                namespaces.splice(namespaces.length - 1, 1);
+                namespaces.splice(-1, 1);
             }
 
             return this;
