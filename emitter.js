@@ -36,10 +36,10 @@ function getEmitter() {
             // Для преподавателя событие - объект содержащий список записавшихся студентов и
             // количество прошедших раз.
             if (this[event]) {
-                this[event].students.add(context);
+                this[event].students.push(context);
             } else {
                 this[event] = {
-                    students: new Set([context]),
+                    students: [context],
                     count: 0
                 };
             }
@@ -75,7 +75,8 @@ function getEmitter() {
             let callEvent = function (student) {
                 if (student[event] && that[event].count < student[event].times &&
                 that[event].count % student[event].frequency === 0) {
-                    student[event].events.forEach(occasion => occasion.call(student));
+                    student[event].events[0].call(student);
+                    student[event].events.unshift();
                 }
             };
             while (namespaces.length !== 0) {
@@ -119,7 +120,7 @@ function getEmitter() {
          */
         through: function (event, context, handler, frequency) {
             this.on(event, context, handler);
-            if (frequency > 0) {
+            if (frequency > 1) {
                 context[event].frequency = frequency;
             }
 
