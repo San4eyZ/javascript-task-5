@@ -31,8 +31,7 @@ function getEmitter() {
                 context[event] = {
                     events: [handler],
                     times: Infinity,
-                    frequency: 1,
-                    number: 0
+                    frequency: 1
                 };
             }
             // Для преподавателя событие - объект содержащий список записавшихся студентов и
@@ -40,10 +39,10 @@ function getEmitter() {
             // Если на событие уже записывались, то записываем в него, если нет, создаем запись
             // Студенты расположены по порядку записи. Могут повторяться.
             if (this[event]) {
-                this[event].students.push(context);
+                this[event].students.add(context);
             } else {
                 this[event] = {
-                    students: [context],
+                    students: new Set([context]),
                     count: 0
                 };
             }
@@ -79,12 +78,10 @@ function getEmitter() {
             let that = this;
             let callEvent = function (student) {
                 // Если студент записан, не исчерпал лимит и наступило подходящее время,
-                // то выполняем первое событие из цепочки.
+                // то выполняем события из цепочки.
                 if (student[event] && that[event].count < student[event].times &&
                 that[event].count % student[event].frequency === 0) {
-                    student[event].events[student[event].number].call(student);
-                    student[event].number++;
-                    student[event].number %= student[event].events.length;
+                    student[event].events.forEach(occasion => occasion.call(student));
                 }
             };
             // Последовательно выполняем события до вершины пространства имен
