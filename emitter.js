@@ -58,6 +58,11 @@ function getEmitter() {
          */
         off: function (event, context) {
             // Удаляем событие и все, что входит в его пространство имен
+            if (event.split('.').length !== 1) {
+                delete context[event];
+
+                return this;
+            }
             for (let occasion of Object.keys(context)) {
                 if (occasion !== 'focus' && occasion !== 'wisdom' &&
                     occasion.indexOf(event) === 0) {
