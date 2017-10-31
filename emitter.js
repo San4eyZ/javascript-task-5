@@ -81,7 +81,7 @@ function getEmitter() {
             while (namespaces.length !== 0) {
                 event = namespaces.join('.');
                 if (this[event]) {
-                    [...this[event].students].forEach(callEvent);
+                    this[event].students.forEach(callEvent);
                     this[event].count++;
                 }
                 namespaces.splice(-1, 1);
@@ -101,7 +101,9 @@ function getEmitter() {
          */
         several: function (event, context, handler, times) {
             this.on(event, context, handler);
-            context[event].times = times;
+            if (times > 0) {
+                context[event].times = times;
+            }
 
             return this;
         },
@@ -117,7 +119,9 @@ function getEmitter() {
          */
         through: function (event, context, handler, frequency) {
             this.on(event, context, handler);
-            context[event].frequency = frequency;
+            if (frequency > 0) {
+                context[event].frequency = frequency;
+            }
 
             return this;
         }

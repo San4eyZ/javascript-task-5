@@ -77,6 +77,10 @@ lecturer
     .on('slide.funny', students.Sharon, function () {
         this.focus += 10;
         this.wisdom -= 10;
+    })
+    .on('slide.funny', students.Sally, function () {
+        this.focus += 5;
+        this.wisdom -= 5;
     });
 
 // Начинаем лекцию
