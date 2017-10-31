@@ -4,7 +4,7 @@
  * Сделано задание на звездочку
  * Реализованы методы several и through
  */
-getEmitter.isStar = true;
+getEmitter.isStar = false;
 module.exports = getEmitter;
 
 /**
@@ -31,7 +31,8 @@ function getEmitter() {
                 context[event] = {
                     events: [handler],
                     times: Infinity,
-                    frequency: 1
+                    frequency: 1,
+                    number: 0
                 };
             }
             // Для преподавателя событие - объект содержащий список записавшихся студентов и
@@ -79,11 +80,11 @@ function getEmitter() {
             let callEvent = function (student) {
                 // Если студент записан, не исчерпал лимит и наступило подходящее время,
                 // то выполняем первое событие из цепочки.
-                if (student[event] && student[event].times !== 0 &&
+                if (student[event] && that[event].count < student[event].times &&
                 that[event].count % student[event].frequency === 0) {
-                    student[event].events[0].call(student);
-                    student[event].events.unshift();
-                    student[event].times--;
+                    student[event].events[student[event].number].call(student);
+                    student[event].number++;
+                    student[event].number %= student[event].events.length;
                 }
             };
             // Последовательно выполняем события до вершины пространства имен
