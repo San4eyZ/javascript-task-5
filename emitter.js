@@ -57,14 +57,10 @@ function getEmitter() {
          * @returns {Object}
          */
         off: function (event, context) {
-            if (event.split('.').length !== 1) {
-                delete context[event];
-
-                return this;
-            }
+            delete context[event];
             for (let occasion of Object.keys(context)) {
                 if (occasion !== 'focus' && occasion !== 'wisdom' &&
-                    occasion.indexOf(event) === 0) {
+                    occasion.indexOf(`${event}.`) === 0) {
                     delete context[occasion];
                 }
             }
