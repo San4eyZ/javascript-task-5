@@ -57,7 +57,6 @@ function getEmitter() {
          * @returns {Object}
          */
         off: function (event, context) {
-            // Удаляем событие и все, что входит в его пространство имен
             if (event.split('.').length !== 1) {
                 delete context[event];
 
