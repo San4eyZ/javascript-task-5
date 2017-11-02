@@ -26,13 +26,17 @@ function getEmitter() {
             // частоту события и количество повторений(Изначально не ограничено).
             // Если на событие уже есть подписка, то добавляем обработчик, иначе подписываем
             if (context[event]) {
-                context[event].events.add(handler);
-            } else {
-                context[event] = {
-                    events: new Set([handler]),
+                context[event].push({
+                    event: handler,
                     times: Infinity,
                     frequency: 1
-                };
+                });
+            } else {
+                context[event] = [{
+                    event: handler,
+                    times: Infinity,
+                    frequency: 1
+                }];
             }
             // Для преподавателя событие - объект содержащий список записавшихся студентов и
             // количество прошедших раз.
@@ -77,11 +81,13 @@ function getEmitter() {
             let namespaces = event.split('.');
             let that = this;
             let callEvent = function (student) {
-                // Если студент записан, не исчерпал лимит и наступило подходящее время,
-                // то выполняем события из цепочки.
-                if (student[event] && that[event].count < student[event].times &&
-                that[event].count % student[event].frequency === 0) {
-                    student[event].events.forEach(occasion => occasion.call(student));
+                if (student[event]) {
+                    student[event].forEach(function (occasion) {
+                        if (that[event].count < occasion.times &&
+                        that[event].count % occasion.frequency === 0) {
+                            occasion.event.call(student);
+                        }
+                    });
                 }
             };
             // Последовательно выполняем события до вершины пространства имен
@@ -110,7 +116,7 @@ function getEmitter() {
         several: function (event, context, handler, times) {
             this.on(event, context, handler);
             if (times > 0) {
-                context[event].times = times;
+                context[event][context[event].length - 1].times = times;
             }
 
             return this;
@@ -128,7 +134,7 @@ function getEmitter() {
         through: function (event, context, handler, frequency) {
             this.on(event, context, handler);
             if (frequency > 1) {
-                context[event].frequency = frequency;
+                context[event][context[event].length - 1].frequency = frequency;
             }
 
             return this;
