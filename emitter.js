@@ -26,10 +26,10 @@ function getEmitter() {
             // частоту события и количество повторений(Изначально не ограничено).
             // Если на событие уже есть подписка, то добавляем обработчик, иначе подписываем
             if (context[event]) {
-                context[event].events.push(handler);
+                context[event].events.add(handler);
             } else {
                 context[event] = {
-                    events: [handler],
+                    events: new Set([handler]),
                     times: Infinity,
                     frequency: 1
                 };
