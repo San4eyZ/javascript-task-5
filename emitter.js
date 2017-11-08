@@ -50,7 +50,7 @@ function getEmitter() {
          */
         emit: function (event) {
             let namespaces = event.split('.');
-            while (namespaces.length !== 0) {
+            while (namespaces.length > 0) {
                 event = namespaces.join('.');
                 if (this[event]) {
                     this[event].forEach(action => action[0].call(action[1]));
