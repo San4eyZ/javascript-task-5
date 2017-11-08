@@ -13,6 +13,7 @@ module.exports = getEmitter;
  */
 function getEmitter() {
     return {
+        events: {},
 
         /**
          * Подписаться на событие
@@ -22,10 +23,10 @@ function getEmitter() {
          * @returns {Object}
          */
         on: function (event, context, handler) {
-            if (this[event]) {
-                this[event].push([handler, context]);
+            if (this.events[event]) {
+                this.events[event].push([handler, context]);
             } else {
-                this[event] = [[handler, context]];
+                this.events[event] = [[handler, context]];
             }
 
             return this;
@@ -38,7 +39,13 @@ function getEmitter() {
          * @returns {Object}
          */
         off: function (event, context) {
-            this[event] = this[event].filter(action => action[1] !== context);
+            let filFunc = action => action[1] !== context;
+            this.events[event] = this.events[event].filter(filFunc);
+            for (let occasion of Object.keys(this.events)) {
+                if (!occasion.indexOf(`${event}.`)) {
+                    this.events[occasion] = this.events[occasion].filter(filFunc);
+                }
+            }
 
             return this;
         },
@@ -52,8 +59,8 @@ function getEmitter() {
             let namespaces = event.split('.');
             while (namespaces.length > 0) {
                 event = namespaces.join('.');
-                if (this[event]) {
-                    this[event].forEach(action => action[0].call(action[1]));
+                if (this.events[event]) {
+                    this.events[event].forEach(action => action[0].call(action[1]));
                 }
                 namespaces.pop();
             }
