@@ -40,7 +40,9 @@ function getEmitter() {
          */
         off: function (event, context) {
             let filFunc = action => action[1] !== context;
-            this.events[event] = this.events[event].filter(filFunc);
+            if (this.events[event]) {
+                this.events[event] = this.events[event].filter(filFunc);
+            }
             for (let occasion of Object.keys(this.events)) {
                 if (!occasion.indexOf(`${event}.`)) {
                     this.events[occasion] = this.events[occasion].filter(filFunc);
