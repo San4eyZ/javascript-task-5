@@ -24,9 +24,9 @@ function getEmitter() {
          */
         on: function (event, context, handler) {
             if (this.events[event]) {
-                this.events[event].push([handler, context]);
+                this.events[event].push({ handler, context });
             } else {
-                this.events[event] = [[handler, context]];
+                this.events[event] = [{ handler, context }];
             }
 
             return this;
@@ -39,13 +39,13 @@ function getEmitter() {
          * @returns {Object}
          */
         off: function (event, context) {
-            let filFunc = action => action[1] !== context;
+            let isWrongContext = action => action.context !== context;
             if (this.events[event]) {
-                this.events[event] = this.events[event].filter(filFunc);
+                this.events[event] = this.events[event].filter(isWrongContext);
             }
             for (let occasion of Object.keys(this.events)) {
                 if (!occasion.indexOf(`${event}.`)) {
-                    this.events[occasion] = this.events[occasion].filter(filFunc);
+                    this.events[occasion] = this.events[occasion].filter(isWrongContext);
                 }
             }
 
@@ -62,7 +62,7 @@ function getEmitter() {
             while (namespaces.length > 0) {
                 event = namespaces.join('.');
                 if (this.events[event]) {
-                    this.events[event].forEach(action => action[0].call(action[1]));
+                    this.events[event].forEach(action => action.handler.call(action.context));
                 }
                 namespaces.pop();
             }
